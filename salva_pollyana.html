@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SALVA A POLLYANA! 🌻</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&family=Permanent+Marker&family=Special+Elite&display=swap');
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;touch-action:manipulation}
+body{background:#0a0a0f;font-family:'Nunito',sans-serif;color:#fff;user-select:none}
+
+:root{
+  --red:#ff3355;--yellow:#ffcc00;--green:#33dd77;--blue:#3399ff;
+  --purple:#aa44ff;--orange:#ff7722;--pink:#ff44aa;--cyan:#00ddcc;
+  --poll:#f5c518;
+  --carl:#ff5533;--eros:#9944ff;--step:#2288ff;
+  --mary:#33cc66;--mel:#ff3388;--joy:#ff8800;--ell:#00bbcc;
+}
+
+/* ══ NOISE OVERLAY ══ */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ══ SCREEN BASE ══ */
+.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.screen.active{display:flex}
+
+/* ══════════════════════════════════
+   INTRO SCREEN
+══════════════════════════════════ */
+#s-intro{background:radial-gradient(ellipse at 50% 40%,#1a0808,#0a0a0f 70%)}
+.intro-siren{font-size:clamp(40px,10vw,80px);animation:sirenSpin 1s linear infinite;display:block;text-align:center}
+@keyframes sirenSpin{0%,100%{filter:hue-rotate(0deg) brightness(1)}50%{filter:hue-rotate(30deg) brightness(1.5)}}
+.intro-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(36px,8vw,72px);letter-spacing:4px;
+  text-align:center;line-height:1.1;margin:16px 0 8px;
+  background:linear-gradient(180deg,#fff 0%,#ffcc00 60%,#ff5533 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.intro-poll{font-size:clamp(50px,12vw,100px);animation:pollFloat 2s ease-in-out infinite;display:block;text-align:center}
+@keyframes pollFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-15px) rotate(3deg)}}
+.intro-sub{font-size:clamp(13px,3vw,18px);color:rgba(255,255,255,.6);text-align:center;margin-bottom:8px;font-style:italic}
+.intro-story{
+  max-width:520px;text-align:center;
+  font-size:clamp(13px,2.5vw,16px);line-height:1.8;
+  color:rgba(255,255,255,.75);margin:0 20px 32px;
+  padding:20px;border:1px solid rgba(255,85,51,.3);
+  background:rgba(255,85,51,.05);border-radius:12px;
+}
+.intro-story strong{color:#ffcc00}
+.intro-cast{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:32px;max-width:480px}
+.cast-pill{
+  padding:6px 14px;border-radius:20px;font-size:12px;font-weight:800;
+  border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);
+  display:flex;align-items:center;gap:6px;
+}
+.intro-btn{
+  font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:5px;
+  padding:18px 64px;border:none;border-radius:10px;cursor:pointer;
+  background:linear-gradient(135deg,#ff3355,#ff7722);color:#fff;
+  box-shadow:0 0 40px rgba(255,51,85,.5);transition:all .2s;
+  animation:pulseCTA 2s ease-in-out infinite;
+}
+@keyframes pulseCTA{0%,100%{box-shadow:0 0 40px rgba(255,51,85,.5)}50%{box-shadow:0 0 70px rgba(255,51,85,.8)}}
+.intro-btn:hover{transform:scale(1.05)}
+
+/* ══ LIFE BAR (global) ══ */
+#lifebar-wrap{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:8px 16px;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,51,85,.3);
+  display:none;
+  align-items:center;gap:12px;
+}
+#lifebar-wrap.visible{display:flex}
+.lb-poll{font-size:22px}
+.lb-label{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:#ff3355;white-space:nowrap}
+.lb-bar{flex:1;height:16px;background:rgba(255,255,255,.1);border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}
+.lb-fill{height:100%;border-radius:8px;transition:width .5s ease,background .5s ease;
+  background:linear-gradient(90deg,#ff3355,#ff7722,#ffcc00,#33dd77);
+  background-size:300% 100%;animation:lifeGrad 2s linear infinite}
+@keyframes lifeGrad{0%{background-position:0%}100%{background-position:100%}}
+.lb-pct{font-family:'Bebas Neue',sans-serif;font-size:18px;color:#ffcc00;min-width:48px;text-align:right}
+.lb-chapter{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:rgba(255,255,255,.4)}
+.lb-stars{font-size:14px;letter-spacing:2px}
+
+/* ══ CHAPTER TRANSITION ══ */
+#s-transition{background:#000;z-index:200}
+.trans-char{font-size:80px;animation:transChar .5s ease;display:block;text-align:center}
+@keyframes transChar{from{transform:scale(0) rotate(-20deg)}to{transform:scale(1) rotate(0)}}
+.trans-chapter{
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(16px,4vw,22px);
+  letter-spacing:6px;color:rgba(255,255,255,.4);text-align:center;margin-bottom:8px;
+}
+.trans-title{
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,7vw,56px);
+  letter-spacing:3px;text-align:center;line-height:1.1;margin-bottom:16px;
+}
+.trans-desc{
+  max-width:440px;text-align:center;font-size:clamp(13px,2.5vw,16px);
+  color:rgba(255,255,255,.65);line-height:1.7;margin:0 20px;
+}
+.trans-bar{
+  width:200px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;
+  margin-top:32px;overflow:hidden;
+}
+.trans-bar-fill{height:100%;background:#ffcc00;animation:transLoad 2s ease forwards}
+@keyframes transLoad{from{width:0}to{width:100%}}
+
+/* ══ MINI-GAME COMMON ══ */
+.game-wrap{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 16px 16px;max-width:600px;margin:0 auto}
+.game-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(20px,5vw,32px);letter-spacing:3px;text-align:center;margin-bottom:4px}
+.game-sub{font-size:clamp(12px,2.5vw,14px);color:rgba(255,255,255,.5);text-align:center;margin-bottom:20px;font-style:italic}
+.timer-bar{width:100%;max-width:400px;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin-bottom:20px}
+.timer-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#33dd77,#ffcc00,#ff3355);transition:width .1s linear}
+
+/* ══ RESULT POPUP ══ */
+#result-popup{
+  position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.85);
+  backdrop-filter:blur(12px);display:none;flex-direction:column;
+  align-items:center;justify-content:center;gap:12px;
+}
+#result-popup.show{display:flex;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.rp-emoji{font-size:80px;animation:rpBounce .6s ease}
+@keyframes rpBounce{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+.rp-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,8vw,60px);letter-spacing:4px;text-align:center}
+.rp-sub{font-size:clamp(13px,3vw,16px);color:rgba(255,255,255,.7);text-align:center;max-width:380px;line-height:1.6;margin:0 20px}
+.rp-stars{font-size:36px;letter-spacing:8px}
+.rp-poll-msg{
+  font-family:'Permanent Marker',cursive;font-size:clamp(14px,3vw,18px);
+  color:#ffcc00;text-align:center;max-width:380px;margin:0 20px;font-style:italic;
+}
+.rp-btn{
+  font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;
+  padding:14px 48px;border:none;border-radius:8px;cursor:pointer;
+  background:linear-gradient(135deg,#33dd77,#00bbcc);color:#000;
+  font-weight:900;transition:all .2s;margin-top:8px;
+}
+.rp-btn:hover{transform:scale(1.05)}
+.rp-btn.bad{background:linear-gradient(135deg,#ff3355,#ff7722)}
+.rp-btn.bad{color:#fff}
+
+/* ══ ENDING SCREEN ══ */
+#s-ending{background:radial-gradient(ellipse at 50% 40%,#041a08,#0a0a0f 70%)}
+.end-poll{font-size:clamp(60px,15vw,120px);animation:endPoll 1s ease;display:block;text-align:center}
+@keyframes endPoll{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.end-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(32px,8vw,72px);letter-spacing:4px;text-align:center;
+  background:linear-gradient(135deg,#33dd77,#ffcc00);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin:12px 0 8px;
+}
+.end-story{
+  max-width:500px;text-align:center;font-size:clamp(13px,2.5vw,16px);line-height:2;
+  color:rgba(255,255,255,.7);margin:0 20px 24px;
+}
+.end-story strong{color:#ffcc00}
+.end-scores{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:28px;max-width:480px}
+.end-score{
+  padding:12px 16px;border-radius:10px;text-align:center;min-width:80px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+}
+.end-score-val{font-family:'Bebas Neue',sans-serif;font-size:28px}
+.end-score-lbl{font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.4);margin-top:2px}
+.end-medal{font-size:40px;text-align:center;margin-bottom:8px}
+.end-btn{
+  font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;
+  padding:14px 48px;border:1px solid rgba(255,255,255,.2);border-radius:8px;
+  background:transparent;color:rgba(255,255,255,.7);cursor:pointer;transition:all .2s;
+}
+.end-btn:hover{border-color:#ffcc00;color:#ffcc00}
+
+/* ══ BAD ENDING ══ */
+#s-badending{background:radial-gradient(ellipse at 50% 40%,#1a0000,#0a0a0f 70%)}
+
+/* ════════════════════════════════════
+   CAP 1 — CARLUZ: CORRIDA (Toque/Click rápido)
+════════════════════════════════════ */
+#s-cap1{background:linear-gradient(160deg,#1a0800,#0a0a0f)}
+.road{
+  width:100%;max-width:400px;height:200px;
+  background:linear-gradient(180deg,#1a1a2e,#16213e);
+  border-radius:16px;border:2px solid rgba(255,85,51,.3);
+  position:relative;overflow:hidden;margin-bottom:16px;
+  box-shadow:0 0 40px rgba(255,85,51,.15);
+}
+.road-lines{position:absolute;inset:0;display:flex;align-items:center}
+.road-line{width:60px;height:4px;background:rgba(255,255,255,.3);border-radius:2px;margin:0 20px;animation:roadMove 0.5s linear infinite}
+@keyframes roadMove{from{transform:translateX(0)}to{transform:translateX(-100px)}}
+.runner{position:absolute;font-size:40px;transition:bottom .1s;bottom:20px;left:20px}
+.runner.jump{animation:runJump .4s ease}
+@keyframes runJump{0%,100%{transform:translateY(0)}50%{transform:translateY(-60px)}}
+.obstacle{position:absolute;font-size:32px;right:-50px;animation:obsMove linear forwards}
+@keyframes obsMove{from{right:-50px}to{right:110%}}
+.tap-btn{
+  font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;
+  width:100%;max-width:400px;padding:20px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,#ff5533,#ff3355);color:#fff;
+  cursor:pointer;transition:all .1s;box-shadow:0 6px 20px rgba(255,85,51,.4);
+  -webkit-tap-highlight-color:transparent;
+}
+.tap-btn:active{transform:scale(.95);box-shadow:none}
+.distance-bar{width:100%;max-width:400px;height:10px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden;margin-bottom:8px}
+.distance-fill{height:100%;background:linear-gradient(90deg,#ff5533,#ffcc00);border-radius:5px;transition:width .2s}
+.distance-label{font-size:12px;color:rgba(255,255,255,.4);letter-spacing:2px;text-align:center;margin-bottom:8px}
+
+/* ════════════════════════════════════
+   CAP 2 — EROS: SEQUÊNCIA DE SÍMBOLOS (Simon Says)
+════════════════════════════════════ */
+#s-cap2{background:linear-gradient(160deg,#0d0022,#0a0a0f)}
+.simon-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:280px;height:280px;margin-bottom:20px}
+.simon-btn{
+  border-radius:16px;border:none;cursor:pointer;
+  font-size:36px;display:flex;align-items:center;justify-content:center;
+  transition:all .1s;filter:brightness(.4);
+  -webkit-tap-highlight-color:transparent;
+}
+.simon-btn.lit{filter:brightness(1.2)!important;transform:scale(.95)}
+.simon-btn:nth-child(1){background:#aa44ff}
+.simon-btn:nth-child(2){background:#3399ff}
+.simon-btn:nth-child(3){background:#33dd77}
+.simon-btn:nth-child(4){background:#ff7722}
+.simon-status{font-family:'Bebas Neue',sans-serif;font-size:clamp(16px,4vw,22px);letter-spacing:3px;text-align:center;min-height:32px}
+.simon-level{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:3px;text-align:center;margin-bottom:12px}
+
+/* ════════════════════════════════════
+   CAP 3 — STEPHANY: PUZZLE MÉDICO (arrastar/conectar)
+════════════════════════════════════ */
+#s-cap3{background:linear-gradient(160deg,#001a2e,#0a0a0f)}
+.med-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  width:100%;max-width:360px;margin-bottom:16px;
+}
+.med-card{
+  aspect-ratio:1;border-radius:10px;border:2px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  font-size:22px;transition:all .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.med-card:hover,.med-card.selected{border-color:#3399ff;background:rgba(51,153,255,.12);transform:scale(1.05)}
+.med-card.matched{border-color:#33dd77;background:rgba(51,221,119,.1);cursor:default;animation:matchPop .3s ease}
+@keyframes matchPop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+.med-card.wrong{border-color:#ff3355;background:rgba(255,51,85,.1);animation:wrongShake .3s ease}
+@keyframes wrongShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.med-card span:last-child{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:1px;text-align:center;line-height:1.2}
+.matches-display{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;text-align:center;color:rgba(255,255,255,.4)}
+
+/* ════════════════════════════════════
+   CAP 4 — MARY: COMBINAR ERVAS (arrastar)
+════════════════════════════════════ */
+#s-cap4{background:linear-gradient(160deg,#001a0a,#0a0a0f)}
+.herbs-area{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:16px;max-width:380px}
+.herb{
+  padding:10px 16px;border-radius:20px;cursor:pointer;
+  font-size:clamp(14px,3vw,18px);font-weight:700;
+  border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);
+  transition:all .2s;display:flex;align-items:center;gap:6px;
+  -webkit-tap-highlight-color:transparent;
+}
+.herb:hover,.herb.selected{transform:scale(1.08);border-color:#33cc66;background:rgba(51,204,102,.12)}
+.herb.used{opacity:.3;cursor:not-allowed;transform:none!important}
+.recipe-slots{display:flex;gap:10px;margin-bottom:16px;justify-content:center;flex-wrap:wrap}
+.recipe-slot{
+  width:70px;height:70px;border-radius:12px;
+  border:2px dashed rgba(51,204,102,.4);background:rgba(51,204,102,.05);
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  transition:all .3s;
+}
+.recipe-slot.filled{border-color:#33cc66;border-style:solid;background:rgba(51,204,102,.15)}
+.recipe-slot.wrong-slot{border-color:#ff3355;animation:wrongShake .3s ease}
+.recipe-hint{font-size:13px;color:rgba(255,255,255,.5);text-align:center;font-style:italic;margin-bottom:12px}
+.recipe-label{
+  font-family:'Special Elite',cursive;font-size:clamp(14px,3vw,16px);
+  color:#33cc66;text-align:center;margin-bottom:12px;
+}
+
+/* ════════════════════════════════════
+   CAP 5 — MEL: DIGITAÇÃO RÁPIDA
+════════════════════════════════════ */
+#s-cap5{background:linear-gradient(160deg,#1a002e,#0a0a0f)}
+.type-display{
+  width:100%;max-width:440px;padding:20px 24px;
+  border-radius:12px;border:2px solid rgba(255,68,170,.3);
+  background:rgba(255,68,170,.05);margin-bottom:16px;
+  font-family:'Special Elite',cursive;font-size:clamp(16px,3.5vw,22px);
+  line-height:1.8;letter-spacing:2px;text-align:center;
+  min-height:80px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+}
+.char-typed{color:#33dd77}
+.char-current{color:#fff;background:rgba(255,255,255,.2);border-radius:3px;padding:0 2px;animation:blink .7s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.char-pending{color:rgba(255,255,255,.35)}
+.char-wrong{color:#ff3355;background:rgba(255,51,85,.2);border-radius:3px;padding:0 2px}
+.type-input{
+  width:100%;max-width:440px;padding:14px 20px;
+  border-radius:10px;border:2px solid rgba(255,68,170,.4);
+  background:rgba(0,0,0,.4);color:#fff;
+  font-family:'Nunito',sans-serif;font-size:16px;letter-spacing:2px;
+  outline:none;text-align:center;
+}
+.type-input:focus{border-color:#ff44aa;box-shadow:0 0 20px rgba(255,68,170,.2)}
+.type-stats{display:flex;gap:24px;margin-bottom:12px}
+.type-stat{text-align:center}
+.type-stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#ff44aa}
+.type-stat-lbl{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:2px}
+.accuracy-bar{width:100%;max-width:440px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;margin-bottom:12px}
+.accuracy-fill{height:100%;background:linear-gradient(90deg,#ff44aa,#aa44ff);border-radius:3px;transition:width .3s}
+
+/* ════════════════════════════════════
+   CAP 6 — JOY: CONVENCER O MÉDICO (diálogo)
+════════════════════════════════════ */
+#s-cap6{background:linear-gradient(160deg,#1a0a00,#0a0a0f)}
+.doctor-wrap{width:100%;max-width:460px}
+.doctor-bubble{
+  padding:20px 24px;border-radius:16px 16px 16px 4px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  margin-bottom:16px;font-size:clamp(14px,2.5vw,16px);line-height:1.7;
+  color:rgba(255,255,255,.8);
+  position:relative;
+}
+.doctor-bubble::before{content:'👨‍⚕️ Dr. Sorriso';display:block;font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.4);margin-bottom:8px;font-family:'Bebas Neue',sans-serif}
+.persuasion-bar{
+  width:100%;height:12px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.1);margin-bottom:8px;
+}
+.persuasion-fill{height:100%;background:linear-gradient(90deg,#ff8800,#ffcc00,#33dd77);border-radius:6px;transition:width .5s ease}
+.persuasion-label{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.4);margin-bottom:16px;letter-spacing:1px}
+.dialog-options{display:flex;flex-direction:column;gap:8px}
+.dialog-opt{
+  padding:14px 18px;border-radius:10px;cursor:pointer;
+  border:1px solid rgba(255,136,0,.25);background:rgba(255,136,0,.06);
+  font-size:clamp(13px,2.5vw,15px);line-height:1.5;text-align:left;
+  transition:all .2s;color:rgba(255,255,255,.8);
+  -webkit-tap-highlight-color:transparent;
+}
+.dialog-opt:hover{border-color:#ff8800;background:rgba(255,136,0,.14);color:#fff;transform:translateX(4px)}
+.dialog-opt:disabled,.dialog-opt.used{opacity:.35;cursor:not-allowed;transform:none!important}
+.joy-speech{
+  padding:12px 20px;border-radius:4px 16px 16px 16px;
+  background:rgba(255,136,0,.1);border:1px solid rgba(255,136,0,.3);
+  margin-bottom:12px;font-size:clamp(13px,2.5vw,15px);line-height:1.6;
+  color:rgba(255,200,100,.9);font-style:italic;display:none;
+}
+.joy-speech::before{content:'🍷 Joy diz:';display:block;font-size:11px;letter-spacing:2px;color:rgba(255,136,0,.6);margin-bottom:6px;font-family:'Bebas Neue',sans-serif;font-style:normal}
+.round-label{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:rgba(255,255,255,.3);text-align:center;margin-bottom:12px}
+
+/* ════════════════════════════════════
+   CAP 7 — ELLIE: OPERAÇÃO CIRÚRGICA (precisão)
+════════════════════════════════════ */
+#s-cap7{background:linear-gradient(160deg,#001a22,#0a0a0f)}
+.surgery-area{
+  width:100%;max-width:360px;height:260px;
+  background:rgba(0,200,180,.04);border:2px solid rgba(0,221,204,.2);
+  border-radius:16px;position:relative;overflow:hidden;margin-bottom:16px;
+  cursor:crosshair;
+}
+.surgery-target{
+  position:absolute;width:50px;height:50px;border-radius:50%;
+  border:3px solid rgba(0,221,204,.8);display:flex;align-items:center;justify-content:center;
+  font-size:24px;cursor:pointer;transition:border-color .2s;
+  animation:targetPulse 1s ease-in-out infinite;
+  -webkit-tap-highlight-color:transparent;
+}
+@keyframes targetPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,221,204,.4)}50%{box-shadow:0 0 0 10px rgba(0,221,204,0)}}
+.surgery-target:hover{border-color:#33dd77}
+.surgery-target.bad{border-color:#ff3355!important;animation:targetPulse 0.5s ease-in-out infinite}
+.surgery-hit{position:absolute;font-size:20px;pointer-events:none;animation:hitFloat .6s ease forwards}
+@keyframes hitFloat{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-40px);opacity:0}}
+.surgery-stats{display:flex;gap:24px;margin-bottom:12px}
+.surg-stat{text-align:center}
+.surg-stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#00ddcc}
+.surg-stat-lbl{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:2px}
+.steady-bar{width:100%;max-width:360px;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.steady-fill{height:100%;background:linear-gradient(90deg,#ff3355,#ffcc00,#00ddcc);border-radius:4px;transition:width .3s}
+.ellie-hand{
+  position:absolute;font-size:28px;pointer-events:none;transition:all .05s;
+  z-index:10;transform:translate(-50%,-50%);
+}
+
+/* ══ MISC ══ */
+.glow-text{text-shadow:0 0 20px currentColor}
+.pulse{animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+</style>
+</head>
+<body>
+
+<!-- ══ GLOBAL LIFE BAR ══ -->
+<div id="lifebar-wrap">
+  <div class="lb-poll">🌻</div>
+  <div class="lb-label">VIDA DA POLLYANA</div>
+  <div class="lb-bar"><div class="lb-fill" id="lb-fill" style="width:100%"></div></div>
+  <div class="lb-pct" id="lb-pct">100%</div>
+  <div class="lb-chapter" id="lb-chapter">CAP 1/7</div>
+  <div class="lb-stars" id="lb-stars">⭐⭐⭐⭐⭐⭐⭐</div>
+</div>
+
+<!-- ══ INTRO ══ -->
+<div class="screen active" id="s-intro">
+  <span class="intro-siren">🚨</span>
+  <div class="intro-title">SALVA A<br>POLLYANA!</div>
+  <span class="intro-poll">🌻</span>
+  <p class="intro-sub">Um jogo de aventura em 7 capítulos épicos</p>
+  <div class="intro-story">
+    Era uma tarde normal quando <strong>Pollyana</strong> saiu para comprar sorvete de morango.<br>
+    Um carro passou na contramão. Um freio que falhou. Um grito.<br>
+    <strong>Pollyana está no hospital, e só os amigos podem salvá-la.</strong><br>
+    Cada um tem uma missão. Cada segundo conta. 🌻
+  </div>
+  <div class="intro-cast" id="intro-cast"></div>
+  <button class="intro-btn" onclick="startJourney()">🚨 COMEÇAR A MISSÃO</button>
+</div>
+
+<!-- ══ TRANSITION ══ -->
+<div class="screen" id="s-transition">
+  <div class="trans-chapter" id="t-chapter">CAPÍTULO 1</div>
+  <div class="trans-char" id="t-char">⚡</div>
+  <div class="trans-title" id="t-title">CARLUZ</div>
+  <div class="trans-desc" id="t-desc">Descrição da missão</div>
+  <div class="trans-bar"><div class="trans-bar-fill"></div></div>
+</div>
+
+<!-- ══ CAP 1: CARLUZ — CORRIDA ATÉ O HOSPITAL ══ -->
+<div class="screen" id="s-cap1">
+  <div class="game-wrap">
+    <div class="game-title" style="color:#ff5533">⚡ CARLUZ CORRE!</div>
+    <div class="game-sub">Toque rápido para pular os obstáculos e chegar ao hospital!</div>
+    <div class="distance-label">DISTÂNCIA ATÉ O HOSPITAL</div>
+    <div class="distance-bar"><div class="distance-fill" id="dist-fill" style="width:0%"></div></div>
+    <div class="road" id="road" onclick="jump()">
+      <div class="road-lines">
+        <div class="road-line"></div><div class="road-line"></div>
+        <div class="road-line"></div><div class="road-line"></div>
+      </div>
+      <div class="runner" id="runner">⚡</div>
+      <div style="position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:32px;opacity:.3">🏥</div>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="tm1" style="width:100%"></div></div>
+    <button class="tap-btn" id="jump-btn" onclick="jump()">🦶 PULAR / TOCAR AQUI</button>
+  </div>
+</div>
+
+<!-- ══ CAP 2: EROS — SEQUÊNCIA MÁGICA ══ -->
+<div class="screen" id="s-cap2">
+  <div class="game-wrap">
+    <div class="game-title" style="color:#aa44ff">🔮 EROS DECIFRA O DIAGNÓSTICO</div>
+    <div class="game-sub">Repita a sequência de símbolos mágicos para decifrar o prontuário médico!</div>
+    <div class="simon-level" id="simon-level">NÍVEL 1 — REPITA A SEQUÊNCIA</div>
+    <div class="simon-status" id="simon-status" style="color:#aa44ff">Observando...</div>
+    <div class="simon-grid" id="simon-grid">
+      <button class="simon-btn" onclick="simonPress(0)">🔮</button>
+      <button class="simon-btn" onclick="simonPress(1)">⭐</button>
+      <button class="simon-btn" onclick="simonPress(2)">🌙</button>
+      <button class="simon-btn" onclick="simonPress(3)">☀️</button>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="tm2" style="width:100%"></div></div>
+  </div>
+</div>
+
+<!-- ══ CAP 3: STEPHANY — PUZZLE MÉDICO ══ -->
+<div class="screen" id="s-cap3">
+  <div class="game-wrap">
+    <div class="game-title" style="color:#2288ff">📐 STEPHANY ANALISA O CASO</div>
+    <div class="game-sub">Encontre os pares de medicamentos certos para o tratamento da Pollyana!</div>
+    <div class="matches-display" id="matches-display">0 / 8 PARES</div>
+    <div class="med-grid" id="med-grid"></div>
+    <div class="timer-bar"><div class="timer-fill" id="tm3" style="width:100%"></div></div>
+  </div>
+</div>
+
+<!-- ══ CAP 4: MARY — POÇÃO DE ERVAS ══ -->
+<div class="screen" id="s-cap4">
+  <div class="game-wrap">
+    <div class="game-title" style="color:#33cc66">🌿 MARY PREPARA A POÇÃO</div>
+    <div class="recipe-label" id="recipe-label">📜 Receita: carregando...</div>
+    <div class="recipe-hint" id="recipe-hint">Selecione as ervas na ordem certa!</div>
+    <div class="recipe-slots" id="recipe-slots"></div>
+    <div class="herbs-area" id="herbs-area"></div>
+    <div class="timer-bar"><div class="timer-fill" id="tm4" style="width:100%"></div></div>
+  </div>
+</div>
+
+<!-- ══ CAP 5: MEL — AVISA A FAMÍLIA ══ -->
+<div class="screen" id="s-cap5">
+  <div class="game-wrap">
+    <div class="game-title" style="color:#ff44aa">🌸 MEL LIGA PRA FAMÍLIA</div>
+    <div class="game-sub">Digite a mensagem de emergência tão rápido quanto possível!</div>
+    <div class="type-stats">
+      <div class="type-stat"><div class="type-stat-val" id="wpm-val">0</div><div class="type-stat-lbl">PALAVRAS/MIN</div></div>
+      <div class="type-stat"><div class="type-stat-val" id="acc-val">100</div><div class="type-stat-lbl">% PRECISÃO</div></div>
+      <div class="type-stat"><div class="type-stat-val" id="prog-val">0</div><div class="type-stat-lbl">% ENVIADO</div></div>
+    </div>
+    <div class="accuracy-bar"><div class="accuracy-fill" id="acc-bar" style="width:100%"></div></div>
+    <div class="type-display" id="type-display"></div>
+    <input class="type-input" id="type-input" placeholder="Comece a digitar aqui..." autocomplete="off" autocorrect="off" spellcheck="false">
+    <div class="timer-bar" style="margin-top:12px"><div class="timer-fill" id="tm5" style="width:100%"></div></div>
+  </div>
+</div>
+
+<!-- ══ CAP 6: JOY — CONVENCER O MÉDICO ══ -->
+<div class="screen" id="s-cap6">
+  <div class="game-wrap" style="padding-top:80px">
+    <div class="game-title" style="color:#ff8800">🍷 JOY CONVENCE O MÉDICO</div>
+    <div class="game-sub">O Dr. Sorriso precisa autorizar a cirurgia. Use seu charme e drama!</div>
+    <div class="doctor-wrap">
+      <div class="round-label" id="joy-round-label">RODADA 1 DE 4</div>
+      <div class="doctor-bubble" id="doctor-bubble">Olha, senhora, eu entendo a situação, mas a fila de cirurgias está enorme...</div>
+      <div class="persuasion-fill" id="persuas-fill" style="width:0%;height:12px;background:linear-gradient(90deg,#ff8800,#ffcc00,#33dd77);border-radius:6px;transition:width .5s ease"></div>
+      <div class="persuasion-label"><span>😤 Irredutível</span><span id="persuas-pct">0%</span><span>🤩 Convencido!</span></div>
+      <div class="joy-speech" id="joy-speech"></div>
+      <div class="dialog-options" id="dialog-options"></div>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="tm6" style="width:100%"></div></div>
+  </div>
+</div>
+
+<!-- ══ CAP 7: ELLIE — A CIRURGIA ══ -->
+<div class="screen" id="s-cap7">
+  <div class="game-wrap">
+    <div class="game-title" style="color:#00ddcc">🌊 ELLIE REALIZA A CIRURGIA</div>
+    <div class="game-sub">Toque nos pontos certos (✅) e evite os errados (❌) com precisão máxima!</div>
+    <div class="surgery-stats">
+      <div class="surg-stat"><div class="surg-stat-val" id="surg-hits">0</div><div class="surg-stat-lbl">ACERTOS</div></div>
+      <div class="surg-stat"><div class="surg-stat-val" id="surg-miss">0</div><div class="surg-stat-lbl">ERROS</div></div>
+      <div class="surg-stat"><div class="surg-stat-val" id="surg-combo">x1</div><div class="surg-stat-lbl">COMBO</div></div>
+    </div>
+    <div class="steady-bar"><div class="steady-fill" id="steady-fill" style="width:100%"></div></div>
+    <div style="font-size:11px;color:rgba(255,255,255,.3);letter-spacing:2px;text-align:center;margin-bottom:10px">ESTABILIDADE DA POLLYANA</div>
+    <div class="surgery-area" id="surgery-area">
+      <div class="ellie-hand" id="ellie-hand" style="left:-50px;top:-50px">🩺</div>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="tm7" style="width:100%"></div></div>
+  </div>
+</div>
+
+<!-- ══ RESULT POPUP ══ -->
+<div id="result-popup">
+  <div class="rp-emoji" id="rp-emoji">🎉</div>
+  <div class="rp-title" id="rp-title">MISSÃO CONCLUÍDA!</div>
+  <div class="rp-stars" id="rp-stars">⭐⭐⭐</div>
+  <div class="rp-sub" id="rp-sub">Descrição do resultado</div>
+  <div class="rp-poll-msg" id="rp-poll-msg">"..."</div>
+  <button class="rp-btn" id="rp-btn" onclick="nextChapter()">PRÓXIMA MISSÃO →</button>
+</div>
+
+<!-- ══ GOOD ENDING ══ -->
+<div class="screen" id="s-ending">
+  <span class="end-poll">🌻</span>
+  <div class="end-title">POLLYANA SOBREVIVEU!</div>
+  <div class="end-story" id="end-story"></div>
+  <div class="end-scores" id="end-scores"></div>
+  <div class="end-medal" id="end-medal">🏆</div>
+  <button class="end-btn" onclick="restartGame()">🔄 JOGAR NOVAMENTE</button>
+</div>
+
+<!-- ══ BAD ENDING ══ -->
+<div class="screen" id="s-badending">
+  <span style="font-size:80px;display:block;text-align:center;animation:pulse 1s infinite">🌻💔</span>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,8vw,60px);letter-spacing:4px;text-align:center;color:#ff3355;margin:16px 0">NÃO CONSEGUIMOS...</div>
+  <div style="max-width:420px;text-align:center;color:rgba(255,255,255,.6);line-height:1.8;font-size:15px;margin:0 20px 28px">
+    A missão falhou. A vida da Pollyana não foi salva dessa vez.<br>
+    <strong style="color:#ff5533">Mas ela é forte. Tente de novo — ela precisa de você!</strong>
+  </div>
+  <button class="intro-btn" onclick="restartGame()">🔄 TENTAR DE NOVO</button>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  GAME CONFIG
+// ══════════════════════════════════════════════
+const CHAPTERS = [
+  {
+    id:'cap1',screen:'s-cap1',char:'Carluz',emoji:'⚡',color:'#ff5533',
+    title:'CARLUZ CORRE!',
+    desc:'Carluz precisa chegar ao hospital em tempo recorde! Pule os obstáculos e não pare de correr!',
+    pollMsg:'"Carluz... você chegou primeiro como sempre 💛"'
+  },
+  {
+    id:'cap2',screen:'s-cap2',char:'Eros',emoji:'🔮',color:'#aa44ff',
+    title:'EROS DECIFRA',
+    desc:'O prontuário médico está em código! Eros usa suas habilidades místicas para decifrar a sequência e entender o diagnóstico.',
+    pollMsg:'"Eros... eu sabia que você entenderia o que os outros não conseguiam ver 💜"'
+  },
+  {
+    id:'cap3',screen:'s-cap3',char:'Stephany',emoji:'📐',color:'#2288ff',
+    title:'STEPHANY ANALISA',
+    desc:'Stephany encontra os pares de medicamentos corretos para o tratamento! Sua precisão analítica vai salvar vidas.',
+    pollMsg:'"Stephany, sua organização me salvou literalmente 💙"'
+  },
+  {
+    id:'cap4',screen:'s-cap4',char:'Mary',emoji:'🌿',color:'#33cc66',
+    title:'MARY CURA',
+    desc:'Mary prepara uma poção especial de ervas medicinais seguindo a receita ancestral da avó dela. Cada erva na ordem certa!',
+    pollMsg:'"Mary... cheira tão bem. Me sinto melhorando já 💚"'
+  },
+  {
+    id:'cap5',screen:'s-cap5',char:'Mel',emoji:'🌸',color:'#ff44aa',
+    title:'MEL AVISA',
+    desc:'Mel precisa enviar a mensagem de emergência para a família da Pollyana. Ela está nervosa, mas digita mais rápido que ninguém!',
+    pollMsg:'"Mel, que bom que você avisou eles... você é tão importante pra mim 🌸"'
+  },
+  {
+    id:'cap6',screen:'s-cap6',char:'Joy',emoji:'🍷',color:'#ff8800',
+    title:'JOY CONVENCE',
+    desc:'O Dr. Sorriso está relutante em fazer a cirurgia urgente. Joy usa todo seu charme, drama e persuasão para convencê-lo!',
+    pollMsg:'"Joy... sua dramaturgia me salvou. Literalmente. 🍷"'
+  },
+  {
+    id:'cap7',screen:'s-cap7',char:'Ellie',emoji:'🌊',color:'#00ddcc',
+    title:'ELLIE OPERA',
+    desc:'O momento final. Ellie, silenciosa e precisa, realiza a cirurgia com mãos firmes. Toque nos pontos certos e salve a Pollyana!',
+    pollMsg:'"Ellie... obrigada. Você não precisou falar nada. Suas mãos disseram tudo 🌊"'
+  },
+];
+
+const CAST = [
+  {name:'Carluz',emoji:'⚡',color:'#ff5533'},
+  {name:'Eros',emoji:'🔮',color:'#aa44ff'},
+  {name:'Stephany',emoji:'📐',color:'#2288ff'},
+  {name:'Mary',emoji:'🌿',color:'#33cc66'},
+  {name:'Mel',emoji:'🌸',color:'#ff44aa'},
+  {name:'Joy',emoji:'🍷',color:'#ff8800'},
+  {name:'Ellie',emoji:'🌊',color:'#00ddcc'},
+];
+
+let G = {
+  currentChapter:0,
+  life:100,
+  stars:[],      // 1-3 per chapter
+  chapterActive:false,
+};
+
+// ══════════════════════════════════════════════
+//  SCREEN UTILS
+// ══════════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function updateLifeBar(){
+  const fill=document.getElementById('lb-fill');
+  const pct=document.getElementById('lb-pct');
+  const stars=document.getElementById('lb-stars');
+  const chapter=document.getElementById('lb-chapter');
+  fill.style.width=Math.max(0,G.life)+'%';
+  pct.textContent=Math.max(0,Math.round(G.life))+'%';
+  chapter.textContent=`CAP ${G.currentChapter+1}/7`;
+  // Stars display
+  const starsEarned=G.stars.reduce((a,b)=>a+b,0);
+  const maxStars=G.stars.length*3;
+  stars.textContent='⭐'.repeat(Math.min(starsEarned,7))+'☆'.repeat(Math.max(0,7-Math.min(starsEarned,7)));
+  if(G.life<30) fill.style.animation='lifeGrad 0.5s linear infinite';
+  else fill.style.animation='lifeGrad 2s linear infinite';
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+function initIntro(){
+  const cast=document.getElementById('intro-cast');
+  cast.innerHTML=CAST.map(c=>`
+    <div class="cast-pill" style="border-color:${c.color}44;color:${c.color}">
+      ${c.emoji} <strong>${c.name}</strong>
+    </div>`).join('');
+}
+
+function startJourney(){
+  G.currentChapter=0;G.life=100;G.stars=[];
+  document.getElementById('lifebar-wrap').classList.add('visible');
+  updateLifeBar();
+  goToChapter(0);
+}
+
+function restartGame(){
+  stopAllTimers();
+  G.currentChapter=0;G.life=100;G.stars=[];
+  document.getElementById('lifebar-wrap').classList.remove('visible');
+  showScreen('s-intro');
+}
+
+// ══════════════════════════════════════════════
+//  CHAPTER FLOW
+// ══════════════════════════════════════════════
+function goToChapter(idx){
+  stopAllTimers();
+  G.chapterActive=false;
+  const ch=CHAPTERS[idx];
+  document.getElementById('t-chapter').textContent=`CAPÍTULO ${idx+1} DE 7`;
+  document.getElementById('t-char').textContent=ch.emoji;
+  document.getElementById('t-char').style.color=ch.color;
+  document.getElementById('t-title').textContent=ch.title;
+  document.getElementById('t-title').style.color=ch.color;
+  document.getElementById('t-desc').textContent=ch.desc;
+  showScreen('s-transition');
+  updateLifeBar();
+  setTimeout(()=>{
+    showScreen(ch.screen);
+    G.chapterActive=true;
+    startChapter(idx);
+  },2500);
+}
+
+function nextChapter(){
+  document.getElementById('result-popup').classList.remove('show');
+  const next=G.currentChapter+1;
+  if(next>=CHAPTERS.length){showEnding();return;}
+  G.currentChapter=next;
+  goToChapter(next);
+}
+
+function showResult(stars,subtitle,nextLabel='PRÓXIMA MISSÃO →'){
+  const ch=CHAPTERS[G.currentChapter];
+  G.stars.push(stars);
+  // Life impact
+  if(stars===3) G.life=Math.min(100,G.life+5);
+  else if(stars===2) G.life=Math.max(0,G.life-10);
+  else G.life=Math.max(0,G.life-25);
+  updateLifeBar();
+  if(G.life<=0){
+    setTimeout(()=>{showScreen('s-badending');document.getElementById('result-popup').classList.remove('show');},600);
+    return;
+  }
+  const emoji=stars===3?'🌟':stars===2?'✅':'⚠️';
+  const title=stars===3?'MISSÃO PERFEITA!':stars===2?'MISSÃO CONCLUÍDA!':'MISSÃO DIFÍCIL...';
+  document.getElementById('rp-emoji').textContent=emoji;
+  document.getElementById('rp-title').textContent=title;
+  document.getElementById('rp-title').style.color=stars===3?ch.color:stars===2?'#ffcc00':'#ff7722';
+  document.getElementById('rp-stars').textContent='⭐'.repeat(stars)+'☆'.repeat(3-stars);
+  document.getElementById('rp-sub').textContent=subtitle;
+  document.getElementById('rp-poll-msg').textContent=ch.pollMsg;
+  document.getElementById('rp-btn').textContent=nextLabel;
+  document.getElementById('rp-btn').className=`rp-btn${stars===1?' bad':''}`;
+  document.getElementById('result-popup').classList.add('show');
+}
+
+function showEnding(){
+  stopAllTimers();
+  document.getElementById('lifebar-wrap').classList.remove('visible');
+  const total=G.stars.reduce((a,b)=>a+b,0);
+  const maxTotal=21;
+  let medal='🥈';let medalTitle='Heróis do Coração';
+  if(total>=18){medal='🏆';medalTitle='HERÓIS LENDÁRIOS';}
+  else if(total>=14){medal='🥇';medalTitle='Grandes Heróis';}
+  const endStory=document.getElementById('end-story');
+  endStory.innerHTML=`
+    A Pollyana abriu os olhos lentamente. A luz era intensa, mas ela sorriu.<br>
+    Os médicos disseram que foi um <strong>milagre</strong>.<br>
+    Mas a gente sabe que não foi — foi <strong>Carluz, Eros, Stephany, Mary, Mel, Joy e Ellie</strong>.<br>
+    Foram os amigos que correram, que lutaram, que não desistiram.<br><br>
+    <strong style="color:#ffcc00">A Pollyana vai ficar bem. Graças a vocês. 🌻</strong>
+  `;
+  document.getElementById('end-medal').textContent=medal+' '+medalTitle;
+  const scoresEl=document.getElementById('end-scores');
+  scoresEl.innerHTML=CHAPTERS.map((ch,i)=>`
+    <div class="end-score" style="border-color:${ch.color}44">
+      <div class="end-score-val" style="color:${ch.color}">${ch.emoji}</div>
+      <div style="font-size:14px">⭐${'⭐'.repeat(G.stars[i]||0)}</div>
+      <div class="end-score-lbl">${ch.char.toUpperCase()}</div>
+    </div>`).join('');
+  showScreen('s-ending');
+}
+
+// ══════════════════════════════════════════════
+//  TIMER SYSTEM
+// ══════════════════════════════════════════════
+let timers={};
+function startTimer(id,duration,fillId,onEnd){
+  clearInterval(timers[id]);
+  let left=duration;
+  const fill=document.getElementById(fillId);
+  timers[id]=setInterval(()=>{
+    left-=100;
+    const pct=Math.max(0,(left/duration)*100);
+    if(fill)fill.style.width=pct+'%';
+    if(left<=0){clearInterval(timers[id]);if(onEnd)onEnd();}
+  },100);
+}
+function stopTimer(id){clearInterval(timers[id]);}
+function stopAllTimers(){Object.keys(timers).forEach(k=>clearInterval(timers[k]));timers={};}
+
+// ══════════════════════════════════════════════
+//  CHAPTER DISPATCHERS
+// ══════════════════════════════════════════════
+function startChapter(idx){
+  const fns=[startCap1,startCap2,startCap3,startCap4,startCap5,startCap6,startCap7];
+  fns[idx]();
+}
+
+// ══════════════════════════════════════════════
+//  CAP 1: CARLUZ — CORRIDA
+// ══════════════════════════════════════════════
+let runState={jumping:false,dist:0,hp:3,speed:1.8,obTimer:null,gameRunning:false};
+
+function startCap1(){
+  runState={jumping:false,dist:0,hp:3,speed:1.8,obTimer:null,gameRunning:true};
+  document.getElementById('dist-fill').style.width='0%';
+  document.getElementById('runner').textContent='⚡';
+  document.getElementById('runner').style.bottom='20px';
+  // Clear old obstacles
+  document.querySelectorAll('.obstacle').forEach(e=>e.remove());
+  spawnObstacle();
+  startTimer('run',30000,'tm1',()=>{if(runState.gameRunning)endCap1();});
+  // Progress loop
+  runState.progLoop=setInterval(()=>{
+    if(!runState.gameRunning)return;
+    runState.dist+=0.6*runState.speed;
+    runState.speed+=0.002;
+    document.getElementById('dist-fill').style.width=Math.min(100,runState.dist)+'%';
+    if(runState.dist>=100){clearInterval(runState.progLoop);endCap1();}
+  },100);
+}
+
+function spawnObstacle(){
+  if(!runState.gameRunning)return;
+  const road=document.getElementById('road');
+  const types=['🚗','🛵','🚧','🏍️','📦'];
+  const ob=document.createElement('div');
+  ob.className='obstacle';
+  ob.textContent=types[Math.floor(Math.random()*types.length)];
+  const dur=Math.max(0.8,2.2/runState.speed);
+  ob.style.animationDuration=dur+'s';
+  ob.style.bottom='18px';
+  road.appendChild(ob);
+  // Collision check
+  const runner=document.getElementById('runner');
+  const coll=setInterval(()=>{
+    if(!runState.gameRunning){clearInterval(coll);return;}
+    const obRect=ob.getBoundingClientRect();
+    const rRect=runner.getBoundingClientRect();
+    if(obRect.left<rRect.right+10&&obRect.right>rRect.left-10&&!runState.jumping){
+      clearInterval(coll);
+      ob.remove();
+      runState.hp--;
+      G.life=Math.max(0,G.life-8);
+      updateLifeBar();
+      if(runState.hp<=0){runState.gameRunning=false;stopAllTimers();endCap1(true);return;}
+      flashScreen('red');
+    }
+  },50);
+  ob.addEventListener('animationend',()=>{clearInterval(coll);ob.remove();});
+  // Next obstacle
+  const delay=Math.max(600,2200-runState.dist*15);
+  runState.obTimer=setTimeout(spawnObstacle,delay);
+}
+
+function jump(){
+  if(!runState.gameRunning||runState.jumping)return;
+  runState.jumping=true;
+  const runner=document.getElementById('runner');
+  runner.classList.add('jump');
+  setTimeout(()=>{runner.classList.remove('jump');runState.jumping=false;},400);
+}
+
+function endCap1(crashed=false){
+  runState.gameRunning=false;
+  stopAllTimers();
+  document.querySelectorAll('.obstacle').forEach(e=>e.remove());
+  if(crashed){showResult(1,'Carluz bateu em alguns obstáculos... mas chegou ao hospital! A Pollyana perdeu um pouco de vida.','PRÓXIMA MISSÃO →');}
+  else if(runState.dist>=100){showResult(3,'CARLUZ VOOU! Chegou ao hospital em tempo recorde! +5% de vida da Pollyana! 🏃‍♂️💨','PRÓXIMA MISSÃO →');}
+  else{showResult(2,'Carluz chegou! Demorou um pouco, mas tá lá. A Pollyana vai ficar bem.','PRÓXIMA MISSÃO →');}
+}
+
+// ══════════════════════════════════════════════
+//  CAP 2: EROS — SIMON SAYS
+// ══════════════════════════════════════════════
+let simonState={seq:[],player:[],level:1,showing:false,active:false};
+
+function startCap2(){
+  simonState={seq:[],player:[],level:1,showing:false,active:false};
+  document.getElementById('simon-status').textContent='Observando...';
+  simonState.seq=[Math.floor(Math.random()*4)];
+  setTimeout(()=>showSimonSeq(),600);
+  startTimer('simon',60000,'tm2',()=>{if(!simonState.showing)finishSimon();});
+}
+
+function showSimonSeq(){
+  simonState.showing=true;simonState.player=[];simonState.active=false;
+  document.getElementById('simon-status').textContent='Memorize a sequência!';
+  document.getElementById('simon-level').textContent=`NÍVEL ${simonState.level} — SEQUÊNCIA DE ${simonState.seq.length}`;
+  const btns=document.querySelectorAll('.simon-btn');
+  let i=0;
+  const interval=setInterval(()=>{
+    btns.forEach(b=>b.classList.remove('lit'));
+    if(i<simonState.seq.length){
+      btns[simonState.seq[i]].classList.add('lit');
+      setTimeout(()=>btns[simonState.seq[i]]?.classList.remove('lit'),350);
+      i++;
+    } else {
+      clearInterval(interval);
+      simonState.showing=false;simonState.active=true;
+      document.getElementById('simon-status').textContent='Sua vez! Repita!';
+    }
+  },600);
+}
+
+function simonPress(idx){
+  if(!simonState.active)return;
+  const btns=document.querySelectorAll('.simon-btn');
+  btns[idx].classList.add('lit');
+  setTimeout(()=>btns[idx].classList.remove('lit'),250);
+  simonState.player.push(idx);
+  const pos=simonState.player.length-1;
+  if(simonState.player[pos]!==simonState.seq[pos]){
+    // Wrong!
+    document.getElementById('simon-status').textContent='❌ Errou! Recomeçando...';
+    simonState.active=false;
+    G.life=Math.max(0,G.life-6);updateLifeBar();flashScreen('red');
+    if(simonState.level>=3){stopTimer('simon');finishSimon();return;}
+    setTimeout(()=>showSimonSeq(),1000);
+    return;
+  }
+  if(simonState.player.length===simonState.seq.length){
+    simonState.level++;
+    document.getElementById('simon-status').textContent=`✅ Correto! Nível ${simonState.level}!`;
+    simonState.active=false;
+    if(simonState.level>5){stopTimer('simon');finishSimon(true);return;}
+    simonState.seq.push(Math.floor(Math.random()*4));
+    setTimeout(()=>showSimonSeq(),800);
+  }
+}
+
+function finishSimon(perfect=false){
+  stopAllTimers();
+  if(perfect||simonState.level>4){showResult(3,'Eros decifrou o diagnóstico completo com maestria! As visões mágicas nunca falham! 🔮','PRÓXIMA MISSÃO →');}
+  else if(simonState.level>=3){showResult(2,'Eros decifrou a maior parte do prontuário. Diagnóstico quase completo.','PRÓXIMA MISSÃO →');}
+  else{showResult(1,'Eros ficou confuso com o código... diagnóstico parcial. A Pollyana precisa de mais cuidado.','PRÓXIMA MISSÃO →');}
+}
+
+// ══════════════════════════════════════════════
+//  CAP 3: STEPHANY — MEMORY MATCH
+// ══════════════════════════════════════════════
+let medState={cards:[],selected:[],matched:0,total:8,locked:false};
+
+const MED_PAIRS=[
+  {emoji:'💊',name:'Analgésico'},{emoji:'💉',name:'Vitamina K'},
+  {emoji:'🩺',name:'Estetoscópio'},{emoji:'🩹',name:'Curativo'},
+  {emoji:'🧬',name:'DNA'},{emoji:'🔬',name:'Microscópio'},
+  {emoji:'🏥',name:'Hospital'},{emoji:'❤️',name:'Coração'},
+];
+
+function startCap3(){
+  medState={cards:[],selected:[],matched:0,total:8,locked:false};
+  const pairs=[...MED_PAIRS,...MED_PAIRS];
+  // Shuffle
+  for(let i=pairs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pairs[i],pairs[j]]=[pairs[j],pairs[i]];}
+  medState.cards=pairs.map((p,i)=>({...p,id:i,matched:false,flipped:false}));
+  renderMedGrid();
+  document.getElementById('matches-display').textContent=`0 / 8 PARES`;
+  startTimer('med',45000,'tm3',()=>finishMed());
+}
+
+function renderMedGrid(){
+  const grid=document.getElementById('med-grid');
+  grid.innerHTML=medState.cards.map((c,i)=>`
+    <div class="med-card ${c.matched?'matched':''}" id="mc-${i}" onclick="medClick(${i})">
+      <span>${c.matched?c.emoji:'❓'}</span>
+      <span>${c.matched?c.name:''}</span>
+    </div>`).join('');
+}
+
+function medClick(i){
+  if(medState.locked)return;
+  const c=medState.cards[i];
+  if(c.matched||medState.selected.includes(i))return;
+  medState.selected.push(i);
+  const el=document.getElementById(`mc-${i}`);
+  el.innerHTML=`<span>${c.emoji}</span><span>${c.name}</span>`;
+  el.classList.add('selected');
+  if(medState.selected.length===2){
+    medState.locked=true;
+    const [a,b]=medState.selected;
+    if(medState.cards[a].emoji===medState.cards[b].emoji){
+      // Match!
+      setTimeout(()=>{
+        medState.cards[a].matched=true;medState.cards[b].matched=true;
+        document.getElementById(`mc-${a}`).className='med-card matched';
+        document.getElementById(`mc-${b}`).className='med-card matched';
+        medState.matched++;
+        document.getElementById('matches-display').textContent=`${medState.matched} / 8 PARES`;
+        medState.selected=[];medState.locked=false;
+        if(medState.matched>=8){stopTimer('med');finishMed(true);}
+      },300);
+    } else {
+      // No match
+      G.life=Math.max(0,G.life-3);updateLifeBar();
+      setTimeout(()=>{
+        const ea=document.getElementById(`mc-${a}`);
+        const eb=document.getElementById(`mc-${b}`);
+        [ea,eb].forEach(el=>{el.classList.add('wrong');el.innerHTML='<span>❓</span><span></span>';});
+        setTimeout(()=>{[ea,eb].forEach(el=>el.classList.remove('wrong','selected'));
+          medState.selected=[];medState.locked=false;},400);
+      },600);
+    }
+  }
+}
+
+function finishMed(perfect=false){
+  stopAllTimers();
+  if(perfect){showResult(3,'Stephany encontrou todos os pares! O tratamento da Pollyana está 100% montado! 📐','PRÓXIMA MISSÃO →');}
+  else if(medState.matched>=5){showResult(2,'Stephany encontrou a maioria dos medicamentos. Tratamento parcialmente montado.','PRÓXIMA MISSÃO →');}
+  else{showResult(1,'Stephany ficou confusa... poucos medicamentos encontrados. A Pollyana vai precisar de ajuda extra.','PRÓXIMA MISSÃO →');}
+}
+
+// ══════════════════════════════════════════════
+//  CAP 4: MARY — POÇÃO DE ERVAS
+// ══════════════════════════════════════════════
+const RECIPES=[
+  {name:'Poção de Cura Rápida 🫙',herbs:['🌿 Erva-cidreira','🍋 Limão','🌺 Hibisco'],hint:'Ervas calmantes e revigorantes'},
+  {name:'Elixir do Coração 💚',herbs:['🌹 Rosa vermelha','🍃 Camomila','🫚 Óleo de coco'],hint:'Para fortalecer o coração'},
+  {name:'Tônico da Força 💪',herbs:['🌵 Aloe vera','🍵 Chá verde','🫐 Mirtilo'],hint:'Energia e recuperação'},
+];
+let maryState={recipe:null,slots:[],selected:null,correct:0,attempts:0};
+const ALL_HERBS=['🌿 Erva-cidreira','🍋 Limão','🌺 Hibisco','🌹 Rosa vermelha','🍃 Camomila','🫚 Óleo de coco','🌵 Aloe vera','🍵 Chá verde','🫐 Mirtilo','🧄 Alho','🫚 Gengibre','🌾 Aveia'];
+
+function startCap4(){
+  maryState.recipe=RECIPES[Math.floor(Math.random()*RECIPES.length)];
+  maryState.slots=new Array(maryState.recipe.herbs.length).fill(null);
+  maryState.selected=null;maryState.correct=0;maryState.attempts=0;
+  document.getElementById('recipe-label').textContent=`📜 Receita: ${maryState.recipe.name}`;
+  document.getElementById('recipe-hint').textContent=`Dica: ${maryState.recipe.hint}`;
+  // Shuffle herbs (include correct ones + random)
+  const needed=maryState.recipe.herbs;
+  const extras=ALL_HERBS.filter(h=>!needed.includes(h));
+  const shown=[...needed,...extras.slice(0,5)];
+  for(let i=shown.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shown[i],shown[j]]=[shown[j],shown[i]];}
+  renderHerbs(shown);
+  renderSlots();
+  startTimer('mary',40000,'tm4',()=>finishMary());
+}
+
+function renderSlots(){
+  const el=document.getElementById('recipe-slots');
+  el.innerHTML=maryState.slots.map((s,i)=>`
+    <div class="recipe-slot ${s?'filled':''}" id="slot-${i}" onclick="herbToSlot(${i})">
+      ${s?s.split(' ')[0]:''}
+    </div>`).join('');
+}
+
+function renderHerbs(herbs){
+  const el=document.getElementById('herbs-area');
+  el.innerHTML=herbs.map((h,i)=>`
+    <div class="herb" id="herb-${i}" onclick="selectHerb(${i},'${h}')">
+      <span>${h.split(' ')[0]}</span><span style="font-size:11px">${h.split(' ').slice(1).join(' ')}</span>
+    </div>`).join('');
+}
+
+function selectHerb(i,herb){
+  const el=document.getElementById(`herb-${i}`);
+  if(el.classList.contains('used'))return;
+  // Deselect previous
+  document.querySelectorAll('.herb.selected').forEach(e=>e.classList.remove('selected'));
+  maryState.selected={idx:i,herb};
+  el.classList.add('selected');
+  // Find next empty slot
+  const empty=maryState.slots.findIndex(s=>s===null);
+  if(empty>=0)herbToSlot(empty);
+}
+
+function herbToSlot(slotIdx){
+  if(!maryState.selected)return;
+  if(maryState.slots[slotIdx]!==null)return;
+  const {idx,herb}=maryState.selected;
+  const expected=maryState.recipe.herbs[slotIdx];
+  maryState.slots[slotIdx]=herb;
+  renderSlots();
+  const slotEl=document.getElementById(`slot-${slotIdx}`);
+  if(herb===expected){
+    slotEl.style.borderColor='#33cc66';maryState.correct++;
+    document.getElementById(`herb-${idx}`).classList.add('used');
+    document.getElementById(`herb-${idx}`).classList.remove('selected');
+  } else {
+    slotEl.classList.add('wrong-slot');G.life=Math.max(0,G.life-5);updateLifeBar();flashScreen('red');
+    maryState.attempts++;
+    setTimeout(()=>{maryState.slots[slotIdx]=null;renderSlots();},500);
+    document.getElementById(`herb-${idx}`).classList.remove('selected');
+  }
+  maryState.selected=null;
+  if(maryState.correct>=maryState.recipe.herbs.length){stopTimer('mary');finishMary(true);}
+}
+
+function finishMary(perfect=false){
+  stopAllTimers();
+  if(perfect){showResult(3,'Mary criou a poção PERFEITA! A Pollyana vai se recuperar mais rápido do que o esperado! 🌿','PRÓXIMA MISSÃO →');}
+  else if(maryState.correct>0){showResult(2,'Mary preparou uma poção parcial. Ajuda, mas podia ser melhor.','PRÓXIMA MISSÃO →');}
+  else{showResult(1,'A poção ficou errada... Mary está bem constrangida. Mas vai continuar tentando.','PRÓXIMA MISSÃO →');}
+}
+
+// ══════════════════════════════════════════════
+//  CAP 5: MEL — DIGITAÇÃO
+// ══════════════════════════════════════════════
+const TYPE_TEXT='EMERGENCIA POLLYANA HOSPITAL SAO LUCAS SALA 4 VEM RAPIDO POR FAVOR ESTA GRAVE MAS VAI FICAR BEM TRAGA FLORES GIRASSOL ELA AMA VOCES';
+let typeState={target:'',typed:'',errors:0,startTime:null,finished:false};
+
+function startCap5(){
+  typeState={target:TYPE_TEXT,typed:'',errors:0,startTime:null,finished:false};
+  renderTypeDisplay();
+  const input=document.getElementById('type-input');
+  input.value='';input.disabled=false;input.focus();
+  input.oninput=onTypeInput;
+  startTimer('type',50000,'tm5',()=>finishType());
+}
+
+function renderTypeDisplay(){
+  const el=document.getElementById('type-display');
+  const target=typeState.target;const typed=typeState.typed;
+  let html='';
+  for(let i=0;i<target.length;i++){
+    const ch=target[i];
+    if(i<typed.length){
+      const ok=typed[i]===ch;
+      html+=`<span class="${ok?'char-typed':'char-wrong'}">${ch}</span>`;
+    } else if(i===typed.length){
+      html+=`<span class="char-current">${ch}</span>`;
+    } else {
+      html+=`<span class="char-pending">${ch}</span>`;
+    }
+  }
+  el.innerHTML=html;
+}
+
+function onTypeInput(e){
+  if(typeState.finished)return;
+  if(!typeState.startTime)typeState.startTime=Date.now();
+  const val=e.target.value.toUpperCase();
+  typeState.typed=val;
+  // Count errors
+  let errs=0;
+  for(let i=0;i<val.length;i++){if(val[i]!==typeState.target[i])errs++;}
+  typeState.errors=errs;
+  const acc=Math.max(0,Math.round(100-(errs/Math.max(1,val.length))*100));
+  const pct=Math.round((val.length/typeState.target.length)*100);
+  const elapsed=(Date.now()-typeState.startTime)/60000;
+  const words=val.split(' ').length;
+  const wpm=elapsed>0?Math.round(words/elapsed):0;
+  document.getElementById('wpm-val').textContent=wpm;
+  document.getElementById('acc-val').textContent=acc;
+  document.getElementById('prog-val').textContent=pct;
+  document.getElementById('acc-bar').style.width=acc+'%';
+  renderTypeDisplay();
+  if(val.length>=typeState.target.length){stopTimer('type');finishType(true,wpm,acc);}
+}
+
+function finishType(done=false,wpm=0,acc=0){
+  typeState.finished=true;stopAllTimers();
+  document.getElementById('type-input').disabled=true;
+  const finalPct=Math.round((typeState.typed.length/typeState.target.length)*100);
+  if(done&&acc>=85){showResult(3,`Mel digitou a mensagem completa com ${acc}% de precisão! A família chegou em minutos! 🌸`,'PRÓXIMA MISSÃO →');}
+  else if(finalPct>=60){showResult(2,'Mel enviou a mensagem pela metade... a família chegou, mas demorou um pouco.','PRÓXIMA MISSÃO →');}
+  else{showResult(1,'Mel ficou nervosa e enviou pouca coisa. A família quase não chegou a tempo.','PRÓXIMA MISSÃO →');}
+}
+
+// ══════════════════════════════════════════════
+//  CAP 6: JOY — DIÁLOGO
+// ══════════════════════════════════════════════
+const DOCTOR_SCRIPT=[
+  {
+    speech:'Olha, senhora, eu entendo a situação, mas a fila de cirurgias está enorme e não posso simplesmente...',
+    options:[
+      {text:'"Doutor, você é visivelmente o médico mais competente desse hospital. Só um gênio como o senhor pode fazer isso."',joy:'Mas claro que é um gênio! Ela pode ver isso no rosto dele!',effect:25,good:true},
+      {text:'"Ouça, minha amiga vai MORRER se você não fizer nada agora mesmo!"',joy:'Dramática? Sim. Eficaz? Absolutamente.',effect:15,good:true},
+      {text:'"Já sei que é complicado, mas talvez a gente possa remarcar pra semana que vem?"',joy:'Não. Isso foi um erro.',effect:-20,good:false},
+    ]
+  },
+  {
+    speech:'Bem... tecnicamente eu poderia encaixar, mas a burocracia do hospital exige três formulários e a aprovação do diretor...',
+    options:[
+      {text:'"Eu PREENCHO os três formulários agora mesmo. Me dá uma caneta."',joy:'A Pollyana não pode esperar por burocracia!',effect:20,good:true},
+      {text:'"O diretor? Ótimo! Vou ligar pra ele pessoalmente. Temos amigos em comum."',joy:'Ela não tem. Mas o doutor não precisa saber disso.',effect:30,good:true},
+      {text:'"Ah, burocracia... entendo. Talvez deixa pra amanhã então."',joy:'NÃO JOY. VOCÊ ESTAVA INDO TÃO BEM.',effect:-15,good:false},
+    ]
+  },
+  {
+    speech:'Hmm... você mencionou o diretor? É que... eu e ele temos uma situação complicada desde o congresso de 2019...',
+    options:[
+      {text:'"Perfeito! Essa é a sua chance de mostrar que você age independente das politicagens do hospital!"',joy:'Isso tocou no ego dele. Excelente movimento.',effect:25,good:true},
+      {text:'"Que drama, doutor. Mas isso não é problema da Pollyana, né? Foca no que importa."',joy:'Direta e no ponto. Clássica Joy.',effect:20,good:true},
+      {text:'"Ai meu Deus, que novela... bom, se é assim mesmo, eu entendo."',joy:'JOY! VOCÊ QUASE TINHA!',effect:-10,good:false},
+    ]
+  },
+  {
+    speech:'Olha... você sabe de uma coisa? Sua dedicação pela amiga me comoveu genuinamente. Raramente vejo isso...',
+    options:[
+      {text:'"Porque a Pollyana merece o melhor. E o senhor É o melhor. Agora por favor — salve ela."',joy:'Isso. ISSO é o discurso de uma campeã.',effect:35,good:true},
+      {text:'"Obrigada... isso é muito gentil... eu... é que ela é minha melhor amiga sabe..."',joy:'Emoção genuína. Às vezes funciona melhor que o drama.',effect:30,good:true},
+      {text:'"Pode me dar esse elogio por escrito? Pra guardar."',joy:'JOY. FOCO.',effect:-5,good:false},
+    ]
+  },
+];
+
+let joyState={round:0,persuasion:0,done:false};
+
+function startCap6(){
+  joyState={round:0,persuasion:0,done:false};
+  renderJoyRound();
+  startTimer('joy',90000,'tm6',()=>finishJoy());
+}
+
+function renderJoyRound(){
+  if(joyState.round>=DOCTOR_SCRIPT.length){finishJoy(true);return;}
+  const sc=DOCTOR_SCRIPT[joyState.round];
+  document.getElementById('joy-round-label').textContent=`RODADA ${joyState.round+1} DE ${DOCTOR_SCRIPT.length}`;
+  document.getElementById('doctor-bubble').textContent=sc.speech;
+  document.getElementById('joy-speech').style.display='none';
+  document.getElementById('dialog-options').innerHTML=sc.options.map((o,i)=>`
+    <button class="dialog-opt" onclick="joyChoose(${i})">${o.text}</button>`).join('');
+}
+
+function joyChoose(idx){
+  if(joyState.done)return;
+  const sc=DOCTOR_SCRIPT[joyState.round];
+  const opt=sc.options[idx];
+  document.querySelectorAll('.dialog-opt').forEach(b=>b.disabled=true);
+  const speechEl=document.getElementById('joy-speech');
+  speechEl.textContent=opt.joy;speechEl.style.display='block';
+  joyState.persuasion=Math.min(100,Math.max(0,joyState.persuasion+opt.effect));
+  const fill=document.getElementById('persuas-fill');
+  fill.style.width=joyState.persuasion+'%';
+  document.getElementById('persuas-pct').textContent=joyState.persuasion+'%';
+  if(!opt.good){G.life=Math.max(0,G.life-5);updateLifeBar();flashScreen('red');}
+  joyState.round++;
+  setTimeout(()=>renderJoyRound(),1400);
+}
+
+function finishJoy(perfect=false){
+  stopAllTimers();joyState.done=true;
+  if(joyState.persuasion>=80||perfect){showResult(3,'Joy convenceu o Dr. Sorriso completamente! A cirurgia foi autorizada em 5 minutos! 🍷','PRÓXIMA MISSÃO →');}
+  else if(joyState.persuasion>=50){showResult(2,'O doutor aceitou... meio a contragosto. A cirurgia vai acontecer.','PRÓXIMA MISSÃO →');}
+  else{showResult(1,'Joy não conseguiu convencer direito. O doutor ficou emburrado. A cirurgia quase foi cancelada.','PRÓXIMA MISSÃO →');}
+}
+
+// ══════════════════════════════════════════════
+//  CAP 7: ELLIE — CIRURGIA
+// ══════════════════════════════════════════════
+let surgState={hits:0,miss:0,combo:1,steady:100,targets:[],spawnTimer:null,active:false,needed:20};
+
+function startCap7(){
+  surgState={hits:0,miss:0,combo:1,steady:100,targets:[],spawnTimer:null,active:true,needed:20};
+  document.getElementById('surg-hits').textContent='0';
+  document.getElementById('surg-miss').textContent='0';
+  document.getElementById('surg-combo').textContent='x1';
+  document.getElementById('steady-fill').style.width='100%';
+  const area=document.getElementById('surgery-area');
+  area.querySelectorAll('.surgery-target').forEach(e=>e.remove());
+  // Mouse/touch tracking for ellie hand
+  area.onmousemove=e=>{
+    const r=area.getBoundingClientRect();
+    const hand=document.getElementById('ellie-hand');
+    hand.style.left=(e.clientX-r.left)+'px';
+    hand.style.top=(e.clientY-r.top)+'px';
+  };
+  area.ontouchmove=e=>{
+    e.preventDefault();
+    const r=area.getBoundingClientRect();
+    const t=e.touches[0];
+    const hand=document.getElementById('ellie-hand');
+    hand.style.left=(t.clientX-r.left)+'px';
+    hand.style.top=(t.clientY-r.top)+'px';
+  };
+  spawnTarget();
+  startTimer('surg',45000,'tm7',()=>finishSurg());
+}
+
+function spawnTarget(){
+  if(!surgState.active)return;
+  const area=document.getElementById('surgery-area');
+  const isBad=Math.random()<0.3;
+  const t=document.createElement('div');
+  t.className=`surgery-target${isBad?' bad':''}`;
+  const aw=area.clientWidth-60;const ah=area.clientHeight-60;
+  const x=20+Math.random()*aw;const y=20+Math.random()*ah;
+  t.style.left=x+'px';t.style.top=y+'px';
+  t.innerHTML=isBad?'❌':'✅';
+  t.onclick=()=>surgHit(t,isBad);
+  area.appendChild(t);
+  surgState.targets.push(t);
+  // Auto-remove after 2.5s if not clicked
+  const autoRemove=setTimeout(()=>{
+    if(t.parentNode){
+      t.remove();
+      if(!isBad){// missed a good one
+        surgState.miss++;surgState.combo=1;surgState.steady=Math.max(0,surgState.steady-10);
+        G.life=Math.max(0,G.life-4);updateLifeBar();
+        updateSurgUI();
+        if(surgState.steady<=0){surgState.active=false;stopAllTimers();finishSurg();}
+      }
+    }
+  },2200);
+  t._timer=autoRemove;
+  // Spawn next
+  const delay=Math.max(400,1200-surgState.hits*25);
+  surgState.spawnTimer=setTimeout(spawnTarget,delay);
+}
+
+function surgHit(el,isBad){
+  if(!surgState.active)return;
+  clearTimeout(el._timer);el.remove();
+  if(isBad){
+    surgState.miss++;surgState.combo=1;
+    surgState.steady=Math.max(0,surgState.steady-15);
+    G.life=Math.max(0,G.life-6);updateLifeBar();flashScreen('red');
+    spawnHitEffect(el,'💀');
+  } else {
+    surgState.hits++;surgState.combo++;
+    surgState.steady=Math.min(100,surgState.steady+3);
+    spawnHitEffect(el,surgState.combo>3?'🌟':'✨');
+    if(surgState.hits>=surgState.needed){surgState.active=false;stopAllTimers();finishSurg(true);}
+  }
+  updateSurgUI();
+  if(!isBad&&surgState.steady<=0){surgState.active=false;stopAllTimers();finishSurg();}
+}
+
+function spawnHitEffect(el,emoji){
+  const area=document.getElementById('surgery-area');
+  const h=document.createElement('div');
+  h.className='surgery-hit';h.textContent=emoji;
+  h.style.left=el.style.left;h.style.top=el.style.top;
+  area.appendChild(h);
+  setTimeout(()=>h.remove(),600);
+}
+
+function updateSurgUI(){
+  document.getElementById('surg-hits').textContent=surgState.hits;
+  document.getElementById('surg-miss').textContent=surgState.miss;
+  document.getElementById('surg-combo').textContent=`x${surgState.combo}`;
+  document.getElementById('steady-fill').style.width=surgState.steady+'%';
+  const fill=document.getElementById('steady-fill');
+  fill.style.background=surgState.steady>60?'linear-gradient(90deg,#00ddcc,#33dd77)':
+    surgState.steady>30?'linear-gradient(90deg,#ffcc00,#ff7722)':
+    'linear-gradient(90deg,#ff3355,#ff7722)';
+}
+
+function finishSurg(perfect=false){
+  surgState.active=false;stopAllTimers();
+  document.querySelectorAll('.surgery-target').forEach(e=>e.remove());
+  if(perfect||surgState.hits>=surgState.needed){showResult(3,'ELLIE FOI PERFEITA! A cirurgia foi um sucesso absoluto! Pollyana acordou sorrindo! 🌊🌻','VER RESULTADO FINAL →');}
+  else if(surgState.hits>=10&&surgState.miss<8){showResult(2,'A cirurgia foi concluída com sucesso. Pollyana está estável.','VER RESULTADO FINAL →');}
+  else{showResult(1,'A cirurgia foi difícil... Pollyana sobreviveu, mas vai precisar de muito repouso.','VER RESULTADO FINAL →');}
+}
+
+// ══════════════════════════════════════════════
+//  VISUAL FEEDBACK
+// ══════════════════════════════════════════════
+function flashScreen(color){
+  const overlay=document.createElement('div');
+  overlay.style.cssText=`position:fixed;inset:0;z-index:9998;pointer-events:none;background:${color==='red'?'rgba(255,51,85,.25)':'rgba(51,221,119,.25)'};animation:flashAnim .3s ease forwards`;
+  if(!document.getElementById('flash-style')){
+    const s=document.createElement('style');s.id='flash-style';
+    s.textContent='@keyframes flashAnim{0%{opacity:1}100%{opacity:0}}';
+    document.head.appendChild(s);
+  }
+  document.body.appendChild(overlay);
+  setTimeout(()=>overlay.remove(),300);
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+initIntro();
+</script>
+</body>
+</html>
